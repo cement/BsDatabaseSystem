@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="learn javascript by www.liaoxuefeng.com">
+    <title>B/S数据库查询系统</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/vue.resource/1.0.3/vue-resource.min.js"></script>
+    <script src="/static/js/excel.js"></script>
+    <style>
+    #sheet {
+        /*table-layout: fixed;*/
+        min-width: auto;
+        width:100%;
+        margin-bottom: 0px;
+    }
+    #sheet caption{
+        text-align: center;
+    }
+    #sheet caption span{
+        font-size: 3rem;
+        font-weight: bold;
+        margin:0 auto;
+        padding: 0 1rem;
+        color: #000;
+        border-bottom: 6px double #8888ff;
+    }
+
+    #sheet thead tr>th {
+        min-width: 30px;
+        min-height: 80px;
+        text-align: center;
+        /*background-color: #ccc;*/
+        background-color: #008888;
+        color: #fff;
+    }
+
+   /* #sheet tr>th:first-child {
+        min-width: 30px;
+        min-height: 80px;
+
+    }*/
+
+    #sheet tr>td {
+        min-width: 30px;
+        /*overflow: hidden;*/
+        text-overflow: ellipsis;
+        /*text-wrap: none;*/
+        word-wrap: normal;
+        /*white-space: nowrap;*/
+        white-space: nowrap;
+    }
+    
+
+    #sheet tbody tr:nth-child(even){
+        background-color: #ddd;
+    }
+   /* #sheet tbody tr:nth-child(even){
+        background-color: #eee;
+    }*/
+
+     #sheet tbody tr:hover{
+        background-color: #8888ee;
+        color:#fff;
+     }
+    #sheet tr>td:first-child {
+        width: 50px;
+    }
+    </style>
+    <script>
+    var ID = 'S-001';
+    var COLUMNS = 10;
+    function getPrikdy(hds){
+        for (var i = 0; i < hds.length; i++) {
+            if(hds[i].flags&(1<<1)){
+                priKey={index:i,fild:hds[i].name};
+                console.log('----------priKey ------------:  ',priKey.name);
+            }
+        }
+    }
+    function getTableName(hds){
+        return hds[0].table;
+    }
+    function createHeader(hds) {
+        var hdr = [{
+            row: 0,
+            col: 0,
+            text: ''
+        }];
+        for (var i = 0; i < hds.length; i++) {
+           
+            hdr.push({
+                row: 0,
+                col: i,
+                text: hds[i].name
+            });
+        }
+        return hdr;
+    }
+
+    // function createRow(hds,row) {
+
+    //     var row = [{
+    //         row: rIndex,
+    //         col: 0,
+    //         contentEditable: false,
+    //         text: '' + rIndex,
+    //         align: 'left'
+    //     }];
+    //     for (var i = 0; i < hds.length; i++) {
+    //         row.push({
+    //             row: rIndex,
+    //             col: i,
+    //             contentEditable: true,
+    //             text: row[i][hds],
+    //             align: 'left'
+    //         });
+    //     }
+    //     return row;
+    // }
+
+    function createRows(hds, rws) {
+        // console.log('row:  ', rows);
+        var rows = [];
+        for (var i = 0; i < rws.length; i++) {
+            var row = [{
+                row: i,
+                col: 0,
+                contentEditable: false,
+                text: i+1,
+                align: 'left'
+            }];
+            for (var j = 0; j < hds.length; j++) {
+                // console.log(rws[i-1]);
+                // 
+                // console.log(hds[j]);
+                row.push({
+                    row: i,
+                    col: j+1,
+                    contentEditable: true,
+                    text: rws[i][hds[j].name],
+                    align: 'left'
+                });
+            }
+
+            rows.push(row);
+        }
+        return rows;
+    }
+    $(function() {
+        var vm = new Vue({
+            el: '#sheet',
+            data: {
+                title: '',
+                prikey:{},
+                // header: createHeader(),
+                // rows: createRows(),
+                header: [],
+                rows: [],
+                selectedRowIndex: 0,
+                selectedColIndex: 0
+            },
+            methods: {
+                open: function() {
+                    var that = this;
+                    that.$resource('/save/sheets/' + ID).get().then(function(resp) {
+                        resp.json().then(function(result) {
+                            that.title = result.title;
+                            that.rows = result.rows;
+                        });
+                    }, function(resp) {
+                        alert('Failed to load.');
+                    });
+                },
+                save: function() {
+                    this.$resource('/save/sheets/' + ID).update({
+                        title: this.title,
+                        rows: this.rows
+                    }).then(function(resp) {
+                        console.log('saved ok.');
+                    }, function(resp) {
+                        alert('failed to save.');
+                    });
+                },
+                focus: function(cell) {
+                    this.selectedRowIndex = cell.row;
+                    this.selectedColIndex = cell.col;
+                },
+                change: function(e) {
+                    var
+                        rowIndex = this.selectedRowIndex,
+                        colIndex = this.selectedColIndex,
+                        text;
+                    if (rowIndex >= 0 && colIndex >= 0) {
+                        text = e.target.innerText;
+                        this.rows[rowIndex][colIndex].text = text;
+                    }
+                }
+            }
+        });
+        window.vm = vm;
+
+        var setAlign = function(align) {
+            var
+                rowIndex = vm.selectedRowIndex,
+                colIndex = vm.selectedColIndex,
+                row, cell;
+            if (rowIndex >= 0 && colIndex >= 0) {
+                row = vm.rows[rowIndex];
+                cell = row[colIndex];
+                cell.align = align;
+            }
+        };
+
+        $('#cmd-open').click(function() {
+            vm.open();
+        });
+
+        $('#cmd-save').click(function() {
+            vm.save();
+        });
+
+        $('#cmd-left').click(function() {
+            setAlign('left');
+        });
+
+        $('#cmd-center').click(function() {
+            setAlign('center');
+        });
+
+        $('#cmd-right').click(function() {
+            setAlign('right');
+        });
+
+        $('#cmd-download').click(function() {
+            console.log(vm.rows);
+            var
+                fileName = vm.title + '.xls',
+                a = document.createElement('a');
+            a.setAttribute('href', 'data:text/xml,' + encodeURIComponent(makeXls(vm.rows)));
+            a.setAttribute('download', fileName);
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+
+        $('#toolbar button').focus(function() {
+            $(this).blur();
+        });
+
+
+    
+    $.ajax({
+        url: "http://127.0.0.1:5757/api/query" + window.location.search,
+        type: "get",
+        dataType: "json",
+        //data:data,
+        success: function(resp) {
+            // console.log(resp);
+            vm.prikey = getPrikdy(resp[0]);
+            vm.title = getTableName(resp[0]);
+            vm.header = createHeader(resp[0]);
+            vm.rows = createRows(resp[0],resp[1]);
+        },
+        error: function(e) {
+            console.log(e);
+        }
+    });
+
+
+
+    });
+
+
+
+
+
+    </script>
+   
+</head>
+
+<body style="overflow:hidden">
+    <header class="navbar navbar-static-top">
+        <div class="container-fluid">
+           <!--  <div class="navbar-header">
+                <a href="#0" class="navbar-brand">文件</a>
+            </div> -->
+            <nav id="toolbar" class="collapse navbar-collapse">
+                <div class="btn-group">
+                    <a href="#0" class="navbar-brand">文件</a>
+                    <button id="cmd-open" type="button" class="btn btn-default navbar-btn"><i class="glyphicon glyphicon-folder-open"></i> Open</button>
+                    <button id="cmd-save" type="button" class="btn btn-default navbar-btn"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button>
+                    <button id="cmd-download" type="button" class="btn btn-default navbar-btn"><i class="glyphicon glyphicon-save"></i> Download</button>
+                </div>
+
+              <!--   <span>
+                <a href="#0" class="navbar-brand">格式</a>
+                </span> -->
+                <div class="btn-group">
+                    <a href="#0" class="navbar-brand">格式</a>
+                    <button id="cmd-left" type="button" class="btn btn-default navbar-btn"><i class="glyphicon glyphicon-align-left"></i></button>
+                    <button id="cmd-center" type="button" class="btn btn-default navbar-btn"><i class="glyphicon glyphicon-align-center"></i></button>
+                    <button id="cmd-right" type="button" class="btn btn-default navbar-btn"><i class="glyphicon glyphicon-align-right"></i></button>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <div id="important" style="position:absolute; margin:50px 0 35px 0; left: 0; right: 0; top: 0; bottom: 0; overflow:scroll;">
+        <table id="sheet" class="table table-bordered">
+            <caption id="caption" ><span contenteditable="true" v-text='title'>表名</span></caption>
+            
+            
+
+            <thead>
+                <tr>
+                    <th v-for="cell in header" v-on:click="focus(cell)" v-text="cell.text"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="tr in rows">
+
+                   
+                    <td  v-for="cell in tr" v-on:click="focus(cell)" v-on:blur="change" v-bind:contenteditable="cell.contentEditable" v-bind:style="{ textAlign: cell.align }" v-text="cell.text"></td>
+                </tr>
+            </tbody>
+           <!--  <tfoot>
+                <tr>
+                    <td></td>
+                </tr>
+            </tfoot> -->
+        </table>
+    </div>
+    <footer class="navbar navbar-fixed-bottom k" style="background-color:#e7e7e7; height:35px; min-height:35px; overflow:hidden;width:100%">
+        <div class="container-fluid">
+            <nav class="collapse navbar-collapse">
+                <p class="text-center" style="padding-top:5px">
+                    <!-- <a target="_blank" href="http://cement.github.io">Website</a> - -->
+                    <a target="_blank" href="https://cement.github.io">GitHub</a> -
+                    <a target="_blank" href="">Weibo</a> This  course is created by <a target="_blank" href="">@YSH. Code licensed <a target="_blank" href="https://cement.github.io/blob/master/LICENSE">Apache</a>.
+                </p>
+            </nav>
+        </div>
+    </footer>
+</body>
+
+</html>

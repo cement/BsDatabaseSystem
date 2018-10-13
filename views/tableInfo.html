@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+    .input_lable_align {
+        display: inline-block;
+        text-align: justify;
+        text-justify: distribute-all-lines;
+        text-align-last: justify;
+        text-indent: 10px;
+        max-width: 10rem;
+        min-width: 5rem;
+        width: 10rem;
+    }
+    .input_column_align{
+        display: inline-block;
+        text-align: justify;
+        text-justify: distribute-all-lines;
+        text-align-last: justify;
+        text-indent: 10px;
+        max-width: 10rem;
+        min-width: 5rem;
+        width: 10rem;
+    }
+    .colmn_info{
+      min-height: 1.5rem;
+      /*padding: 0.5rem auto;*/
+    }
+    #colmns_info{
+        min-height: 3rem;
+    }
+    #page_title{
+        text-align: center;
+    }
+
+    </style>
+</head>
+
+<body>
+    <h1 id="page_title">表格显示信息设置</h1>
+    <form id="input_table" name="input_tale" action='/api/query' method="get">
+        <lable class="input_lable_align" for='input_db_addresss'>请输入表名:</lable>
+        <input id="table_name" type="text" name="table" value="" placeholder="表名" autofocus="autofocus">
+        <input id="alias_name" type="text" name="alias" value="" placeholder="表别名(可选)">
+        <input id="query_limit" type="text" name="limit" value="0" style="display:none">
+        <input id="input_table_submit" type="button" value="获取表信息">
+    </form>
+    <hr/>
+    <form id="input_columns" name="input_columns" action='/api/query' method="get">
+        <!-- <lable class="input_lable_align" for='input_db_addresss'>请输入列别名:</lable> -->
+        <!--  <input class="columns_name" type="text" name="column_name" value="" placeholder="列名">-->
+            <!-- <input class="columns_alias" type="text" name="column_alias" value="" placeholder="列别名(可选)">  -->
+            <div id="info_warp"></div>
+        <div id="select_info" class="query_info"></div>
+        <div id="wheres_info" class="query_info"></div>
+        <div id="groups_info" class="query_info"></div>
+        <div id="orders_info" class="query_info"></div>
+        <div id="limits_info" class="query_info"></div>
+        </div>
+        <input id="input_column_submit" type="button" value="获取表信息">
+    </form>
+    <script src='http://libs.baidu.com/jquery/1.11.1/jquery.min.js'></script>
+    <script src="static/js/jQuery-from.js"></script>
+    <script>
+    $('#input_table_submit').click(function() {
+        $("#input_table").ajaxForm({
+            url: "http://127.0.0.1:5757/api/query",
+            type: "get",
+            dataType: "json",
+            //data:data,
+            success: function(resp) {
+                console.log(resp);
+                var hds = resp[0];
+                for (var i = 0; i < hds.length; i++) {
+                    console.log(i);
+
+                    var inputHtml = 
+                    '<input type="checkbox"><lable class="input_column_align" for="input_db_addresss">'+hds[i].name+'</lable><input class="colmn_info" type="text" name="'+hds[i].name+'" value="" placeholder="列别名(可选)">';
+                    $('#select_info').append(inputHtml);
+                    // $('#wheres_info').append(inputHtml);
+                    // $('#groups_info').append(inputHtml);
+                    // $('#orders_info').append(inputHtml);
+                }
+
+
+
+            },
+            error: function(e) {
+                console.log(e);
+            }
+
+        });
+        $("#input_table").submit();
+
+
+    });
+    </script>
+</body>
+
+</html>

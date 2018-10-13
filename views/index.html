@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+    body{
+    	background-color: #eee;
+    }
+    .login_lable_align {
+        display: inline-block;
+        text-align: justify;
+        text-justify: distribute-all-lines;
+        text-align-last: justify;
+        text-indent: 10px;
+        width: 10rem;
+    }
+    #page_title{
+    	text-align: center;
+    }
+    #page_title span{
+         
+         /*font-family: STXihei,"华文细黑",'Microsoft YaHei','微软雅黑';*/
+         padding-left: 1rem;
+         padding-right: 1rem;
+         padding-bottom: 0.3rem;
+         /*border-width:3px;*/
+         /*border-style: double;*/
+         border-bottom: 6px double #8888ff;
+    }
+    </style>
+</head>
+
+<body>
+	<!-- let config = {
+	host: 'localhost',
+	port:'3306',
+	user: 'root',
+	password: 'root',
+	database: 'chineseArea',
+	multipleStatements: true 
+} -->
+	<h1 id="page_title"><span>B/S数据库查询系统</span></h1>
+    <form id="login_form" action="/api/login" method="post">
+        <lable class="login_lable_align" for='login_db_addresss'>请输入数据库地址:</lable>
+        <input id="login_db_addresss" type="text" name="host" value="" placeholder="数据库地址" autofocus="autofocus">
+        <hr/>
+        <lable class="login_lable_align" for='login_db_port'>请输入端口号:</lable>
+        <input id="login_db_port" type="number" name="port" value="3306" placeholder="端口号">
+        <hr/>
+        <lable class="login_lable_align" for='login_user_name'>请输入用户名:</lable>
+        <input id="login_user_name" type="text" name="user" value="" placeholder="用户名">
+        <hr/>
+        <lable class="login_lable_align" for='login_user_pass'>请输入用户密码:</lable>
+        <input id="login_user_pass" type="text" name="password" value="" placeholder="密码">
+        <hr/>
+        <lable class="login_lable_align" for='login_table_name'>请输入数据库名称:</lable>
+        <input id="login_table_name" type="text" name="database" value="" placeholder="数据库名称">
+        <hr/>
+
+        <input id="login_table_submit" type="button" value="测试连接">
+
+
+    </form>
+
+    <script src='js/jquery.core.min.js'></script>
+    <script src="js/jquery.from.js"></script>
+    <script>
+    $('#login_table_submit').click(function(e) {
+          $("#login_form").ajaxSubmit({
+            //url: "http://127.0.0.1:5757/api/query",
+            type: "post",
+            dataType: "json",
+            //data:data,
+            error: function(e) {
+                console.log('--------eeeeeeee--------',e);
+                location.href='views/show.html';
+            },
+
+            success: function(resp) {
+                alert(resp.code);
+                //location.href='index.html';
+                console.log('--------resp--------',resp);
+            }
+            
+        });
+        // $("#login_form").submit();
+
+
+    });
+  
+    </script>
+</body>
+
+</html>

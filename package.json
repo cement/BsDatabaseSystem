@@ -1,0 +1,28 @@
+{
+    "name": "koa-weapp-demo",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app.js",
+    "scripts": {
+        "start": "pm2 start process.prod.json --no-daemon",
+        "local-dev": "nodemon --config nodemon.json app.js",
+        "initdb": "npm install && node tools/initdb.js"
+    },
+    "author": "Jason",
+    "license": "MIT",
+    "dependencies": {
+        "knex": "^0.13.0",
+        "koa": "^2.0.0",
+        "koa-bodyparser": "^3.2.0",
+        "koa-log4": "^2.1.0",
+        "koa-router": "^7.0.1",
+        "koa-static": "^4.0.2",
+        "lodash": "^4.17.4",
+        "mysql": "^2.14.1"
+    },
+    "devDependencies": {
+        "babel-eslint": "^7.1.0",
+        "debug": "^2.6.8",
+        "node-cmd": "^3.0.0"
+    }
+}

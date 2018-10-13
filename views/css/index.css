@@ -1,0 +1,82 @@
+ .newRow{
+        color:red;
+    }
+    #table {
+        width: 100%;
+        min-height: 50px;
+        line-height: 50px;
+        text-align: center;
+        border-color: #009688;
+        border-collapse: collapse;
+        border-width: 2px;
+    }
+
+    #table td {
+        min-width: 30px;
+        white-space: nowrap;
+    }
+
+
+    #table,
+    #table tr th,
+    #table tr td {
+        border-color: #0066ff;
+    }
+    #table tr td p{
+        margin: 0;
+        padding: 0;
+    }
+
+    #table caption span {
+        /*border-bottom:4px groove #009688;*/
+        /*text-decoration: underline;*/
+        font-size: 2rem;
+        padding-bottom: 2px;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        border-bottom: 3px solid #0066ff;
+    }
+
+    thead {
+        color: #ffffff;
+        font-weight: bold;
+        background-color: #007788;
+    }
+
+    #tbody tr td a{
+        padding:0.5rem;
+        text-decoration:none;
+    }
+    #tbody tr td a:hover{
+        color: blue;
+    }
+    #tbody tr td:last-child {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+
+    #tbody tr:nth-child(2n) {
+        background-color: #eee;
+    }
+
+    #tbody tr:nth-child(2n+1) {
+        background-color: #bbb;
+    }
+
+    #tbody tr:hover {
+        color: #fff;
+        background-color: #448844;
+    }
+    #tbody tr td :focus{
+        color: red;
+        background-color: #fff;
+    }
+   /* #tbody tr td.prikey{
+        color: blue;
+        background-color: #fee;
+    }
+*/
+    tfoot {
+        background-color: #008888;
+    }
