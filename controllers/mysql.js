@@ -1,5 +1,6 @@
 //var mysqlQuery = require('../mysql/mysqlpromise.js');
 var mysql = require('../middlewares/mysql.js');
+const router = require('../routes')
 let baseConfig = {
 	host: '',
 	port:'',
@@ -19,11 +20,11 @@ let baseConfig = {
             //config = Object.assign(baseConfig,config);
             console.log('---------------8------------',config);
             let res = await mysql.login(config);
-            // let redirectUrl = encodeURI('/index.html');
-
+            let redirectUrl = encodeURI('/views/show.html');
+            ctx.response.status = 302;
 			// let table = params.shift().replace(/\W+?/img,'');
-			// ctx.redirect(redirectUrl);
-            ctx.body = res;
+			ctx.response.redirect(redirectUrl);
+            //ctx.body = res;
           }catch(e){
           	ctx.body = e;
 
@@ -90,9 +91,9 @@ let baseConfig = {
 			// console.log('---------------------count----------',count[1][0].count);
 			let result = await mysql.query(sql);
 			//result.count=count;
-			let resp = JSON.stringify(result);
+			//let resp = JSON.stringify(result);
 			//result.count=count;
-			ctx.body = resp;
+			ctx.body = result;
 		} catch (e) {
 			ctx.body = e.message;
 		}

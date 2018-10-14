@@ -64,8 +64,8 @@
 
     </form>
 
-    <script src='js/jquery.core.min.js'></script>
-    <script src="js/jquery.from.js"></script>
+    <script src='views/js/jquery.core.min.js'></script>
+    <script src="views/js/jquery.from.js"></script>
     <script>
     $('#login_table_submit').click(function(e) {
           $("#login_form").ajaxSubmit({
@@ -74,7 +74,7 @@
             dataType: "json",
             //data:data,
             error: function(e) {
-                console.log('--------eeeeeeee--------',e);
+                console.log('--------adb--------',e);
                 location.href='views/show.html';
             },
 

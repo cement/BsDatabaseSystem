@@ -28,9 +28,9 @@ module.exports = async function (ctx, next) {
         debug('Catch Error: %o', e)
 
         // 设置状态码为 500 - 服务端错误
-        ctx.status = 500
-
-        ctx.redirect('/500.html');
+        ctx.status = 500;
+        ctx.body = e;
+        // ctx.redirect('/500.html');
 
         // 输出详细的错误信息
         // ctx.body = {

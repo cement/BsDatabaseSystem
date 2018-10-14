@@ -2,9 +2,9 @@ let mysql = require('mysql');
 
 //let pool = mysql.createPool(config);
 //let config;
-let pool;
+//let pool;
 module.exports = {
-	 query:async function(sql,params) {
+	   query:async function(sql,params) {
 		// console.log('------------------------>>>>>');
 		return new Promise(function(resolve, reject) {
 

@@ -4,19 +4,19 @@
 const router = require('koa-router')({
     prefix: '/api'   // 定义所有路由的前缀都已 /weapp 开头
 })
-const controllers = require('../controllers')
 
-// router.get('/home', controllers.home);
-//router.post('/login', controllers.mysql.login);
-router.register('/login', ['get','post'], [controllers.mysql.login]);
-router.register('/showdb', ['get','post'], [controllers.mysql.showdb]);
-router.register('/showtb', ['get','post'], [controllers.mysql.showtb]);
+const handlers = require('../controllers')
+
+
+router.register('/login', ['get','post'], [handlers.mysql.login]);
+router.register('/showdb', ['get','post'], [handlers.mysql.showdb]);
+router.register('/showtb', ['get','post'], [handlers.mysql.showtb]);
 //router.get('/query', controllers.mysql.query);
-router.register('/query', ['get','post'], [controllers.mysql.query]);
+router.register('/query', ['get','post'], [handlers.mysql.query]);
 //router.get('/knexquery', controllers.knex.query);
-router.post('/update', controllers.mysql.update);
-router.post('/insert', controllers.mysql.insert);
-router.post('/delete', controllers.mysql.delete);
+router.post('/update', handlers.mysql.update);
+router.post('/insert', handlers.mysql.insert);
+router.post('/delete', handlers.mysql.delete);
 
 
 // 从 sdk 中取出中间件
